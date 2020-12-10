@@ -30,9 +30,13 @@ class Game {
     }
 
     car1 = createSprite(100,200);
+    car1.addImage(car1Image);
     car2 = createSprite(300,200);
+    car2.addImage(car2Image);
     car3 = createSprite(500,200);
+    car3.addImage(car3Image);
     car4 = createSprite(700,200);
+    car4.addImage(car4Image);
     cars = [car1, car2, car3, car4];
   }
 
@@ -40,15 +44,20 @@ class Game {
     form.hide();
 
     Player.getPlayerInfo();
-    
+    player.getFinishedPlayers();
+
+
     if(allPlayers !== undefined){
+      background(rgb(198,135,103));
+      image(track,0,-displayHeight*4,displayWidth,displayHeight*5)
+
       //var display_position = 100;
       
       //index of the array
       var index = 0;
 
       //x and y position of the cars
-      var x = 0;
+      var x = 175;
       var y;
 
       for(var plr in allPlayers){
@@ -63,22 +72,76 @@ class Game {
         cars[index-1].y = y;
 
         if (index === player.index){
-          cars[index - 1].shapeColor = "red";
+          fill("red");
+          ellipse(x,y,60,60);
           camera.position.x = displayWidth/2;
           camera.position.y = cars[index-1].y
         }
        
-        //textSize(15);
-        //text(allPlayers[plr].name + ": " + allPlayers[plr].distance, 120,display_position)
+      textSize(15);
+      textAlign(CENTER)
+        text(allPlayers[plr].name, cars[index-1].x,cars[index-1].y+75)
       }
 
     }
 
-    if(keyIsDown(UP_ARROW) && player.index !== null){
+    if(keyIsDown(UP_ARROW) && player.index !== null && passedFinish === false){
       player.distance +=10
       player.update();
     }
 
+    if(player.distance > 400 && passedFinish === false){
+Player.updateFinishedPlayers();
+player.update();
+
+passedFinish = true;
+
+
+    }
     drawSprites();
   }
+
+
+  end(){
+
+    console.log("Game Ended")
+  }
+
+
+
+displayRanks(){
+
+camera.position.x = 0
+camera.position.y = 0;
+
+
+    image(bronzeImage, displayWidth/-4, -100 + displayHeight/9, 200, 240);
+    image(silverImage, displayWidth/4, -100 + displayHeight/10, 225, 270);
+    image(goldImage, 0, -100, 250, 300);
+
+    textAlign(CENTER)
+    textSize(50)
+    for(var plr in allPlayers){
+      if(allPlayers[plr].rank === 1){
+        text("1st : " + allPlayers[plr].name,0,85)
+
+      }
+      else if(allPlayers[plr].rank === 2){
+        text("2nd: " + allPlayers[plr].name,displayWidth/4, displayHeight/9 + 200)
+
+      }
+      
+      else if(allPlayers[plr].rank === 3) {
+        text("3rd: " + allPlayers[plr].name,displayWidth/-4, displayHeight/10 + 206)
+
+      }
+  else {
+
+    textSize(30)
+    text("Honorable Mention : " +allPlayers[plr].name, 0,225)
+
+  }
+    }
+}
+
 }
